@@ -1,0 +1,7 @@
+controllers:
+    resource: ../../src/Containers/
+    type: annotation
+
+kernel:
+    resource: ../../src/Ship/Kernels/HttpKernel.php
+    type: annotation
