@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Containers\Author\Repository;
+namespace App\Repository;
 
-use App\Containers\Author\Entity\Author;
+use App\Entity\Author;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 

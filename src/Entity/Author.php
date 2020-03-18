@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Containers\Author\Entity;
+namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Containers\Author\Repository\AuthorRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\AuthorRepository")
  */
 class Author
 {

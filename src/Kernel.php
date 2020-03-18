@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Ship\Kernels;
+namespace App;
 
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Component\Config\Loader\LoaderInterface;
@@ -9,7 +9,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Kernel as BaseHttpKernel;
 use Symfony\Component\Routing\RouteCollectionBuilder;
 
-class HttpKernel extends BaseHttpKernel
+class Kernel extends BaseHttpKernel
 {
     use MicroKernelTrait;
 
@@ -27,7 +27,7 @@ class HttpKernel extends BaseHttpKernel
 
     public function getProjectDir(): string
     {
-        return \dirname(__DIR__, 3);
+        return \dirname(__DIR__);
     }
 
     protected function configureContainer(ContainerBuilder $container, LoaderInterface $loader): void
