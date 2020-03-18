@@ -2,13 +2,10 @@
 
 
 namespace App\Controller;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class AuthorController
+class AuthorController extends AbstractController
 {
-    /*
-     * @Route("/author", name="author_list")
-     */
     public function index()
     {
         dd(123);
