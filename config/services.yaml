@@ -23,6 +23,10 @@ services:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
 
+    one_level.service:
+        class: App\DesktopBundle\Lib\Game\OneLevel
+        arguments: [ "@doctrine.orm.entity_manager" ]
+
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
