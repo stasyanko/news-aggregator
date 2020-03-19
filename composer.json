@@ -5,6 +5,7 @@
         "php": "^7.4.2",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        “ext-json”: “*”,
         "sensio/framework-extra-bundle": "^5.5",
         "symfony/console": "5.0.*",
         "symfony/dotenv": "5.0.*",
