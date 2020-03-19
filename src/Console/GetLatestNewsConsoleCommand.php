@@ -3,9 +3,12 @@
 
 namespace App\Console;
 
+use App\Command\FetchNewsFromNewsApiCommand;
+use App\Command\Invoker\NewsCommandInvoker;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\HttpClient\CurlHttpClient;
 
 class GetLatestNewsConsoleCommand extends Command
 {
@@ -21,6 +24,16 @@ class GetLatestNewsConsoleCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): void
     {
-        //TODO: complete
+        $newsDataSources = [
+            new FetchNewsFromNewsApiCommand(new CurlHttpClient()),
+        ];
+
+        $commandInvoker = new NewsCommandInvoker();
+
+        foreach ($newsDataSources as $newsDataSource) {
+            $articles = $commandInvoker->execute($newsDataSource);
+            //TODO: store to db
+            dd($articles);
+        }
     }
 }
