@@ -13,7 +13,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\HttpClient\CurlHttpClient;
 use Symfony\Component\HttpKernel\Log\Logger;
 
-class GetLatestNewsConsoleCommand extends Command
+class GetAndStoreLatestNewsConsoleCommand extends Command
 {
     // the name of the command (the part after "bin/console")
     protected static $defaultName = 'get:latest-news';
