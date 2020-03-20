@@ -5,6 +5,7 @@ namespace App\Console;
 
 use App\Command\FetchNewsFromNewsApiCommand;
 use App\Command\Invoker\NewsCommandInvoker;
+use App\Entity\Article;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -49,9 +50,17 @@ class GetLatestNewsConsoleCommand extends Command
 
         foreach ($newsDataSources as $newsDataSource) {
             $articles = $commandInvoker->execute($newsDataSource);
-            //TODO: check if an article exists in db
-            foreach($articles as $article) {
-                $this->em->persist($article);
+
+            foreach ($articles as $article) {
+                $articleFromDb = $this->em
+                    ->getRepository(Article::class)
+                    ->findOneBy([
+                        'url' => $article->getUrl()
+                    ]);
+
+                if($articleFromDb === null) {
+                    $this->em->persist($article);
+                }
             }
 
             $this->em->flush();
