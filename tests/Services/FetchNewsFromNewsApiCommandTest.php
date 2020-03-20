@@ -1,26 +1,30 @@
 <?php
 
 
-namespace App\Tests;
+namespace App\Tests\Services;
 
 
 use App\Command\FetchNewsFromNewsApiCommand;
+use App\Exceptions\NewsFetchFailedException;
 use App\Services\ThirdPartyNewsApiRequesterServiceInterface;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
+use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface;
+use Throwable;
 
 class FetchNewsFromNewsApiCommandTest extends TestCase
 {
     public function testExecuteReturnsArticles()
     {
-        $fetchNewsFromNewsApiCommandInstance = $this->getFetchNewsFromNewsApiCommandInstance();
+        $fetchNewsFromNewsApiCommandInstance = $this->getFetchNewsFromNewsApiCommandInstanceForSuccess();
         $articles = $fetchNewsFromNewsApiCommandInstance->execute();
 
         $this->assertEquals(20, count($articles));
         $this->assertEquals("Walmart wants to hire 150,000 temporary workers as the coronavirus pandemic continues - CNN", $articles[0]->getTitle());
     }
 
-    private function getFetchNewsFromNewsApiCommandInstance()
+    private function getFetchNewsFromNewsApiCommandInstanceForSuccess()
     {
 
         $loggerResolver= $this->createMock(LoggerInterface::class);
@@ -31,6 +35,43 @@ class FetchNewsFromNewsApiCommandTest extends TestCase
             ->expects($this->once())
             ->method('request')
             ->will($this->returnValue($newsApiJsonString));
+
+        return new FetchNewsFromNewsApiCommand(
+            $loggerResolver,
+            $newsApiRequesterResolver
+        );
+    }
+
+    public function testExecuteThrowsNewsFetchFailedExceptionWhenHttpExceptionInterface()
+    {
+        $clientExceptionMock = $this->createMock(HttpExceptionInterface::class);
+        $this->expectException(NewsFetchFailedException::class);
+
+        $fetchNewsFromNewsApiCommandInstance = $this->getFetchNewsFromNewsApiCommandInstanceForException($clientExceptionMock);
+        $fetchNewsFromNewsApiCommandInstance->execute();
+    }
+
+    public function testExecuteThrowsNewsFetchFailedExceptionWhenExceptionInterface()
+    {
+        $clientExceptionMock = $this->createMock(ExceptionInterface::class);
+        $this->expectException(NewsFetchFailedException::class);
+
+        $fetchNewsFromNewsApiCommandInstance = $this->getFetchNewsFromNewsApiCommandInstanceForException($clientExceptionMock);
+        $fetchNewsFromNewsApiCommandInstance->execute();
+    }
+
+    private function getFetchNewsFromNewsApiCommandInstanceForException(Throwable $httpException)
+    {
+        $loggerResolver= $this->createMock(LoggerInterface::class);
+        $loggerResolver
+            ->expects($this->once())
+            ->method('error');
+
+        $newsApiRequesterResolver= $this->createMock(ThirdPartyNewsApiRequesterServiceInterface::class);
+        $newsApiRequesterResolver
+            ->expects($this->once())
+            ->method('request')
+            ->will($this->throwException($httpException));
 
         return new FetchNewsFromNewsApiCommand(
             $loggerResolver,

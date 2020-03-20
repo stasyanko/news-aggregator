@@ -41,6 +41,7 @@ class GetAndStoreLatestNewsConsoleCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $newsDataSources = [
+            //TODO: move it to factory
             new FetchNewsFromNewsApiCommand(
                 new Logger(),
                 new NewsApiRequesterService(
