@@ -50,23 +50,30 @@ class GetLatestNewsConsoleCommand extends Command
 
         foreach ($newsDataSources as $newsDataSource) {
             $articles = $commandInvoker->execute($newsDataSource);
-
-            foreach ($articles as $article) {
-                $articleFromDb = $this->em
-                    ->getRepository(Article::class)
-                    ->findOneBy([
-                        'url' => $article->getUrl()
-                    ]);
-
-                if($articleFromDb === null) {
-                    $this->em->persist($article);
-                }
-            }
-
-            $this->em->flush();
-            $this->em->clear();
+            $this->storeArticles($articles);
         }
 
         return 0;
+    }
+
+    /**
+     * @param $articles Article[]
+     */
+    private function storeArticles(array $articles): void
+    {
+        foreach ($articles as $article) {
+            $articleFromDb = $this->em
+                ->getRepository(Article::class)
+                ->findOneBy([
+                    'url' => $article->getUrl()
+                ]);
+
+            if ($articleFromDb === null) {
+                $this->em->persist($article);
+            }
+        }
+
+        $this->em->flush();
+        $this->em->clear();
     }
 }
