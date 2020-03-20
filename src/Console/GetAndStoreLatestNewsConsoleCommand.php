@@ -6,6 +6,7 @@ namespace App\Console;
 use App\Command\FetchNewsFromNewsApiCommand;
 use App\Command\Invoker\NewsCommandInvoker;
 use App\Entity\Article;
+use App\Services\NewsApiRequesterService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -41,8 +42,10 @@ class GetAndStoreLatestNewsConsoleCommand extends Command
     {
         $newsDataSources = [
             new FetchNewsFromNewsApiCommand(
-                new CurlHttpClient(),
-                new Logger()
+                new Logger(),
+                new NewsApiRequesterService(
+                    new CurlHttpClient()
+                )
             ),
         ];
 
