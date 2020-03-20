@@ -9,6 +9,7 @@ interface NewsCommandInvokerInterface
 {
     /**
      * @param FetchNewsCommandInterface $fetchNewsCommand
+     * @throws \App\Exceptions\NewsFetchFailedException
      * @return Article[]
      */
     public function execute(FetchNewsCommandInterface $fetchNewsCommand): array;

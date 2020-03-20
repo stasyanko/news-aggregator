@@ -12,6 +12,7 @@ class NewsCommandInvoker implements NewsCommandInvokerInterface
     /**
      * @param FetchNewsCommandInterface $fetchNewsCommand
      * @return Article[]
+     * @throws \App\Exceptions\NewsFetchFailedException
      */
     public function execute(FetchNewsCommandInterface $fetchNewsCommand): array
     {
