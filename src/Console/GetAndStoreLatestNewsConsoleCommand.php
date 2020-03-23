@@ -23,6 +23,7 @@ class GetAndStoreLatestNewsConsoleCommand extends Command
     private EntityManagerInterface $em;
     private LoggerInterface $logger;
     private NewsCommandInvokerInterface $newsCommandInvoker;
+    private FetchNewsFromNewsApiCommand $fetchNewsFromNewsApiCommand;
 
     /**
      * OneLevel Constructor
@@ -30,17 +31,21 @@ class GetAndStoreLatestNewsConsoleCommand extends Command
      * @param EntityManagerInterface $em
      * @param LoggerInterface $logger
      * @param NewsCommandInvokerInterface $newsCommandInvoker
+     * @param FetchNewsFromNewsApiCommand $fetchNewsFromNewsApiCommand
      */
     public function __construct(
         EntityManagerInterface $em,
         LoggerInterface $logger,
-        NewsCommandInvokerInterface $newsCommandInvoker
+        NewsCommandInvokerInterface $newsCommandInvoker,
+        FetchNewsFromNewsApiCommand $fetchNewsFromNewsApiCommand
     )
     {
         parent::__construct();
+        
         $this->em = $em;
         $this->logger = $logger;
         $this->newsCommandInvoker = $newsCommandInvoker;
+        $this->fetchNewsFromNewsApiCommand = $fetchNewsFromNewsApiCommand;
     }
 
     protected function configure()
@@ -52,15 +57,8 @@ class GetAndStoreLatestNewsConsoleCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $newsDataSources = [
-            //TODO: move it to factory
-            new FetchNewsFromNewsApiCommand(
-                new Logger(),
-                new NewsApiRequesterService(
-                    new CurlHttpClient()
-                )
-            ),
-        ];
+        $newsDataSources = [];
+        $newsDataSources[] = $this->fetchNewsFromNewsApiCommand;
 
         foreach ($newsDataSources as $newsDataSource) {
             try {

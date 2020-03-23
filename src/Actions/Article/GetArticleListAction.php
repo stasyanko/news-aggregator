@@ -9,8 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class GetArticleListAction implements GetArticleListActionInterface
 {
-    /* @var EntityManagerInterface $em */
-    protected $em;
+    protected EntityManagerInterface $em;
 
     /**
      * OneLevel Constructor
