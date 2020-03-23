@@ -3,18 +3,16 @@
 
 namespace App\Console;
 
+use App\Command\FetchNewsCommandInterface;
 use App\Command\FetchNewsFromNewsApiCommand;
 use App\Command\Invoker\NewsCommandInvokerInterface;
 use App\Entity\Article;
 use App\Exceptions\NewsFetchFailedException;
-use App\Services\NewsApiRequesterService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\HttpClient\CurlHttpClient;
-use Symfony\Component\HttpKernel\Log\Logger;
 
 class GetAndStoreLatestNewsConsoleCommand extends Command
 {
@@ -23,7 +21,10 @@ class GetAndStoreLatestNewsConsoleCommand extends Command
     private EntityManagerInterface $em;
     private LoggerInterface $logger;
     private NewsCommandInvokerInterface $newsCommandInvoker;
-    private FetchNewsFromNewsApiCommand $fetchNewsFromNewsApiCommand;
+    /*
+     * @var FetchNewsCommandInterface[]
+     */
+    private array $newsSources;
 
     /**
      * OneLevel Constructor
@@ -41,11 +42,11 @@ class GetAndStoreLatestNewsConsoleCommand extends Command
     )
     {
         parent::__construct();
-        
+
         $this->em = $em;
         $this->logger = $logger;
         $this->newsCommandInvoker = $newsCommandInvoker;
-        $this->fetchNewsFromNewsApiCommand = $fetchNewsFromNewsApiCommand;
+        $this->addNewsSource($fetchNewsFromNewsApiCommand);
     }
 
     protected function configure()
@@ -57,10 +58,7 @@ class GetAndStoreLatestNewsConsoleCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $newsDataSources = [];
-        $newsDataSources[] = $this->fetchNewsFromNewsApiCommand;
-
-        foreach ($newsDataSources as $newsDataSource) {
+        foreach ($this->newsSources as $newsDataSource) {
             try {
                 $articles = $this->newsCommandInvoker->execute($newsDataSource);
                 $this->storeArticles($articles);
@@ -70,6 +68,11 @@ class GetAndStoreLatestNewsConsoleCommand extends Command
         }
 
         return 0;
+    }
+
+    private function addNewsSource(FetchNewsCommandInterface $fetchNewsCommand): void
+    {
+        $this->newsSources[] = $fetchNewsCommand;
     }
 
     /**
