@@ -3,6 +3,27 @@
 A news aggregator site built with php and symfony.
 To make the codebase extendable, the [command](https://designpatternsphp.readthedocs.io/en/latest/Behavioral/Command/README.html) design pattern is used for news data sources.
 
+To avoid fat services, action classes are used for handling business logic.
+For example, to get the list of articles, we use GetArticleListAction that is injected with service container:
+ 
+     <?php  
+   
+   
+ 	namespace App\Controller;  
+ 	use App\Actions\Article\GetArticleListActionInterface;  
+ 	use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;  
+   
+ 	class ArticleController extends AbstractController  
+ 	{  
+       public function list(GetArticleListActionInterface $getArticleListAction)  
+       {  
+         $articles = $getArticleListAction->execute();  
+   
+         return $this->render('article/list.html.twig', ['articles' => $articles]);  
+       }
+     }
+
+
 ### Starting the project:
 
 First, copy and rename .env.test.example to .env.test and .env.example to .env.
