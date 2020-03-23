@@ -4,7 +4,6 @@
 namespace App\Console;
 
 use App\Command\FetchNewsFromNewsApiCommand;
-use App\Command\Invoker\NewsCommandInvoker;
 use App\Command\Invoker\NewsCommandInvokerInterface;
 use App\Entity\Article;
 use App\Exceptions\NewsFetchFailedException;
