@@ -7,9 +7,15 @@ To make the codebase extendable, the [command](https://designpatternsphp.readthe
 
 First, copy and rename .env.test.example to .env.test and .env.example to .env.
 
+Set database credentials in DATABASE_URL and run:
+
+`php bin/console doctrine:database:create`
+
+`php bin/console doctrine:migrations:migrate`
+
 You need to get api key from https://newsapi.org and set NEWS_API_KEY variable in .env and .env.test to your value.
 
-To start the project, it is advisable to have symfony cli installed. You can start the project list this:
+To start the project, it is advisable to have symfony cli installed. You can start the project like this:
 
 `symfony serve`
 
