@@ -1,13 +1,13 @@
 <?php
 
 
-namespace App\Actions\Author;
+namespace App\Actions\Article;
 
 
-use App\Entity\Author;
+use App\Entity\Article;
 use Doctrine\ORM\EntityManagerInterface;
 
-class GetAuthorListAction implements GetAuthorListActionInterface
+class GetArticleListAction implements GetArticleListActionInterface
 {
     /* @var EntityManagerInterface $em */
     protected $em;
@@ -23,10 +23,10 @@ class GetAuthorListAction implements GetAuthorListActionInterface
     }
 
     /**
-     * @return Author[]
+     * @return Article[]
      */
     public function execute(): array
     {
-        return $this->em->getRepository(Author::class)->findAll();
+        return $this->em->getRepository(Article::class)->findAll();
     }
 }

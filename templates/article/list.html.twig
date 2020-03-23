@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Latest news</title>
+</head>
+<body>
+<h1>Latest news</h1>
+
+{% for article in articles %}
+    <h3>{{ article.title }}</h3>
+
+    <p>{{ article.description }}</p>
+{% endfor %}
+
+</body>
+</html>
