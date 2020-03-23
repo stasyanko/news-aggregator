@@ -6,7 +6,7 @@ To make the codebase extendable, the [command](https://designpatternsphp.readthe
 To avoid fat services, action classes are used for handling business logic.
 For example, to get the list of articles, we use GetArticleListAction that is injected with service container:
  
-     <?php  
+    <?php  
    
    
  	namespace App\Controller;  
