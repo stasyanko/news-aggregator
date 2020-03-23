@@ -5,9 +5,12 @@ namespace App\Console;
 
 use App\Command\FetchNewsFromNewsApiCommand;
 use App\Command\Invoker\NewsCommandInvoker;
+use App\Command\Invoker\NewsCommandInvokerInterface;
 use App\Entity\Article;
+use App\Exceptions\NewsFetchFailedException;
 use App\Services\NewsApiRequesterService;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -19,16 +22,26 @@ class GetAndStoreLatestNewsConsoleCommand extends Command
     // the name of the command (the part after "bin/console")
     protected static $defaultName = 'get:latest-news';
     private EntityManagerInterface $em;
+    private LoggerInterface $logger;
+    private NewsCommandInvokerInterface $newsCommandInvoker;
 
     /**
      * OneLevel Constructor
      *
      * @param EntityManagerInterface $em
+     * @param LoggerInterface $logger
+     * @param NewsCommandInvokerInterface $newsCommandInvoker
      */
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(
+        EntityManagerInterface $em,
+        LoggerInterface $logger,
+        NewsCommandInvokerInterface $newsCommandInvoker
+    )
     {
         parent::__construct();
         $this->em = $em;
+        $this->logger = $logger;
+        $this->newsCommandInvoker = $newsCommandInvoker;
     }
 
     protected function configure()
@@ -50,11 +63,13 @@ class GetAndStoreLatestNewsConsoleCommand extends Command
             ),
         ];
 
-        $commandInvoker = new NewsCommandInvoker();
-
         foreach ($newsDataSources as $newsDataSource) {
-            $articles = $commandInvoker->execute($newsDataSource);
-            $this->storeArticles($articles);
+            try {
+                $articles = $this->newsCommandInvoker->execute($newsDataSource);
+                $this->storeArticles($articles);
+            } catch (NewsFetchFailedException $e) {
+                $this->logger->error($e->getMessage());
+            }
         }
 
         return 0;
